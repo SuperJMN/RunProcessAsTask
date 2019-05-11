@@ -8,12 +8,15 @@ namespace RunProcessAsTask
 {
     public static partial class ProcessEx
     {
-        public static async Task<ProcessResults> RunAsync(ProcessStartInfo processStartInfo, List<string> standardOutput, List<string> standardError, CancellationToken cancellationToken)
+        public static async Task<ProcessResults> RunAsync(ProcessStartInfo processStartInfo, Action<string> onOutput, Action<string> onError, CancellationToken cancellationToken)
         {
             // force some settings in the start info so we can capture the output
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
+
+            var compiledOutputOutput = new List<string>();
+            var compiledErrorOutput = new List<string>();
 
             var tcs = new TaskCompletionSource<ProcessResults>();
 
@@ -22,20 +25,30 @@ namespace RunProcessAsTask
                 EnableRaisingEvents = true
             };
 
-            var standardOutputResults = new TaskCompletionSource<string[]>();
+            var standardOutputResults = new TaskCompletionSource<IEnumerable<string>>();
             process.OutputDataReceived += (sender, args) => {
                 if (args.Data != null)
-                    standardOutput.Add(args.Data);
+                {
+                    onOutput(args.Data);
+                    compiledOutputOutput.Add(args.Data);
+                }
                 else
-                    standardOutputResults.SetResult(standardOutput.ToArray());
+                {
+                    standardOutputResults.SetResult(compiledOutputOutput.AsReadOnly());
+                }
             };
 
-            var standardErrorResults = new TaskCompletionSource<string[]>();
+            var standardErrorResults = new TaskCompletionSource<IEnumerable<string>>();
             process.ErrorDataReceived += (sender, args) => {
                 if (args.Data != null)
-                    standardError.Add(args.Data);
+                {
+                    onError(args.Data);
+                    compiledErrorOutput.Add(args.Data);
+                }
                 else
-                    standardErrorResults.SetResult(standardError.ToArray());
+                {
+                    standardErrorResults.SetResult(compiledErrorOutput.AsReadOnly());
+                }
             };
 
             var processStartTime = new TaskCompletionSource<DateTime>();

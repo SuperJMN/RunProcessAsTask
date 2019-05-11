@@ -7,7 +7,7 @@ namespace RunProcessAsTask
 {
     public sealed class ProcessResults : IDisposable
     {
-        public ProcessResults(Process process, DateTime processStartTime, string[] standardOutput, string[] standardError)
+        public ProcessResults(Process process, DateTime processStartTime, IEnumerable<string> standardOutput, IEnumerable<string> standardError)
         {
             Process = process;
             ExitCode = process.ExitCode;
@@ -19,8 +19,8 @@ namespace RunProcessAsTask
         public Process Process { get; }
         public int ExitCode { get; }
         public TimeSpan RunTime { get; }
-        public string[] StandardOutput { get; }
-        public string[] StandardError { get; }
+        public IEnumerable<string> StandardOutput { get; }
+        public IEnumerable<string> StandardError { get; }
         public void Dispose() { Process.Dispose(); }
     }
 }

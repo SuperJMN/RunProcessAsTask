@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +19,10 @@ namespace RunProcessAsTask
             => RunAsync(processStartInfo, CancellationToken.None);
 
         public static Task<ProcessResults> RunAsync(ProcessStartInfo processStartInfo, CancellationToken cancellationToken) =>
-            RunAsync(processStartInfo, new List<string>(), new List<string>(), cancellationToken);
+            RunAsync(processStartInfo, s => { }, s => { }, cancellationToken);
+
+        public static Task<ProcessResults> RunAsync(ProcessStartInfo processStartInfo,
+            IObserver<string> onOutputObserver, IObserver<string> onErrorObserver, CancellationToken cancellationToken)
+            => RunAsync(processStartInfo, onOutputObserver.OnNext, onErrorObserver.OnNext, cancellationToken);
     }
 }
