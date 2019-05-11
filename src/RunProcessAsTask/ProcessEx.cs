@@ -8,7 +8,7 @@ namespace RunProcessAsTask
 {
     public static partial class ProcessEx
     {
-        public static async Task<ProcessResults> RunAsync(ProcessStartInfo processStartInfo, Action<string> onOutput, Action<string> onError, CancellationToken cancellationToken)
+        public static async Task<ProcessResults> RunAsync(this ProcessStartInfo processStartInfo, Action<string> onOutput, Action<string> onError, CancellationToken cancellationToken)
         {
             // force some settings in the start info so we can capture the output
             processStartInfo.UseShellExecute = false;
