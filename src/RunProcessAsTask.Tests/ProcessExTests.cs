@@ -99,8 +99,8 @@ namespace RunProcessAsTask.Tests
                 Assert.Equal(expectedExitCode, results.ExitCode);
                 Assert.Equal(expectedExitCode, results.Process.ExitCode);
                 Assert.True(results.RunTime.TotalMilliseconds >= millisecondsToSleep);
-                Assert.Equal(expectedStandardOutputLineCount, results.StandardOutput.Length);
-                Assert.Equal(expectedStandardErrorLineCount, results.StandardError.Length);
+                Assert.Equal(expectedStandardOutputLineCount, results.StandardOutput.Count());
+                Assert.Equal(expectedStandardErrorLineCount, results.StandardError.Count());
 
                 var expectedStandardOutput = Enumerable.Range(1, expectedStandardOutputLineCount)
                     .Select(x => "Standard output line #" + x)
