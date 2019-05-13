@@ -22,7 +22,7 @@ namespace RunProcessAsTask
             RunAsync(processStartInfo, s => { }, s => { }, cancellationToken);
 
         public static Task<ProcessResults> RunAsync(this ProcessStartInfo processStartInfo,
-            IObserver<string> onOutputObserver, IObserver<string> onErrorObserver, CancellationToken cancellationToken)
-            => RunAsync(processStartInfo, onOutputObserver.OnNext, onErrorObserver.OnNext, cancellationToken);
+            IObserver<string> onOutputObserver, IObserver<string> onErrorObserver, CancellationToken cancellationToken = default(CancellationToken))
+            => RunAsync(processStartInfo, s => onOutputObserver?.OnNext(s), s => onErrorObserver?.OnNext(s), cancellationToken);
     }
 }
