@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace RunProcessAsTask
 {
@@ -22,5 +21,15 @@ namespace RunProcessAsTask
         public IEnumerable<string> StandardOutput { get; }
         public IEnumerable<string> StandardError { get; }
         public void Dispose() { Process.Dispose(); }
+
+        public override string ToString()
+        {
+            return $"{nameof(ExitCode)}: {ExitCode}, {nameof(RunTime)}: {RunTime}, Output: {Join(StandardOutput)}, Errors: {Join(StandardError)}";
+        }
+
+        private static string Join(IEnumerable<string> strings, string separator = "\n")
+        {
+            return string.Join(separator, strings);
+        }
     }
 }
